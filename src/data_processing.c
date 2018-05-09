@@ -86,7 +86,8 @@ int main(int argc, char **argv) {
 		}
 
 
-		future.tm_sec = 45;
+
+		future.tm_sec = 34;
 		future.tm_min = 3;
 		future.tm_hour = 13;
 		future.tm_mday = 9;     /* 1st */
