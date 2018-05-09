@@ -46,7 +46,7 @@ void input_line_parcer(char* in_line, MarketData *output)
 	char *end_line;
     int size_of_line;
 
-	printf("Input line: %s", in_line);
+	//printf("Input line: %s", in_line);
 
 
 	//search first char char *strchr(const char *str, int c)
@@ -86,7 +86,7 @@ void input_line_parcer(char* in_line, MarketData *output)
 
 
 
-	printf("\n Exit line: %s \n", output->time_stamp);
+	//printf("\n Exit line: %s \n", output->time_stamp);
 
 }
 

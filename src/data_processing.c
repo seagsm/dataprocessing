@@ -1,9 +1,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "data_utilites.h"
 #include "data_line_parcer.h"
+#include <time.h>
 
 #define _GNU_SOURCE
 
@@ -26,6 +28,7 @@ FILE *fp[50];
 char input_line[1000];
 
 
+
 int main(int argc, char **argv) {
 	char * line = NULL;
 	size_t len = 0;
@@ -37,6 +40,11 @@ int main(int argc, char **argv) {
 	int c = 0;
 	char **arr = NULL;
 
+	const char *filename = "/home/vadym/Projects/dataprocessing/Debug/BTC_BTS.txt";
+	MarketData data_out;
+
+    struct tm future;       /* as in future date */
+    time_t t;
 
 
 	test_funcion();
@@ -47,65 +55,98 @@ int main(int argc, char **argv) {
 		printf("argv[%d]: %s\n", i, argv[i]);
 	}
 
-	fp[0] = fopen(argv[1], "r");
+
+	// BTC_BTS.txt
+	// fp[0] = fopen(argv[1], "r");
+	// fp[0] = fopen("BTC_BTS.txt", "r");
+
+	fp[0] = fopen(filename, "r");
+
+
+
 	if (fp[0] == NULL) {
+		printf("Error open file.\n");
 		exit(EXIT_FAILURE_TO_OPEN_FILE);
 	}
 
-	//while ((read = getline(&line, &len, fp)) != -1)
-	//{
-	//    printf("Retrieved line of length %zu :\n", read);
-	//    printf("%d  %s",counter, line);
-	//    counter++;
-	//}
-	read = getline(&line, &len, fp[0]);
-	printf("Retrieved line of length %zu :\n", read);
-	printf("%d  %s", counter, line);
-
-
-
-	//Line processing:
+	while ((read = getline(&line, &len, fp[0])) != -1)
 	{
-		for(int i = 0; i < len; i++ )
+//	    printf("Retrieved line of length %zu :\n", read);
+//	    printf("%d  %s \n",counter, line);
+
+		input_line_parcer(line, &data_out);
+		printf("\n Exit line: %s \n", data_out.time_stamp);
+
+		c = split(data_out.time_stamp, ' ', &arr);
+
+		printf("found %d tokens.\n", c);
+
+		for (i = 0; i < c; i++) {
+			printf("string #%d: %s\n", i, arr[i]);
+		}
+
+
+		future.tm_sec = 45;
+		future.tm_min = 3;
+		future.tm_hour = 13;
+		future.tm_mday = 9;     /* 1st */
+		future.tm_mon = 5;      /* July */
+		future.tm_year = 2018 - 1900; /* 2038 in years since 1900 */
+		future.tm_isdst = 0;          /* Daylight Saving not in affect (UTC) */
+		#ifdef _BSD_SOURCE
+		        future.tm_zone = "UTC";
+		#endif
+
+		t = mktime( &future );
+		if ( -1 == t )
 		{
-			input_line[i] = line[i];
+		                printf("Error converting 1 July 2038 to time_t time since Epoch\n");
+		                return EXIT_FAILURE;
+		}
+		else
+		{
+			printf("unix time is %d \n", t);
+
 
 		}
-		printf("%d  %s", len, input_line);
 
 
 
 
+
+
+
+
+
+		counter++;
 	}
 
 
 
 
 
+//	read = getline(&line, &len, fp[0]);
+//	printf("Retrieved line of length %zu :\n", read);
+//	printf("%d  %s", counter, line);
+//Line processing:
+//	{
+//		for(int i = 0; i < len; i++ )
+//		{
+//			input_line[i] = line[i];
+//
+//		}
+//		printf("%d  %s", len, input_line);
+//	}
 
-
-
-
-
-
-
-
-
-	//strlen(contents)
-
-	//*s = *line;
-
-	printf("TEST:: %s ", s);
-	printf("TEST:: %s ", line);
-
-	c = split(line, ':', &arr);
-
-	printf("found %d tokens.\n", c);
-
-	for (i = 0; i < c; i++) {
-		printf("string #%d: %s\n", i, arr[i]);
-	}
-
+//strlen(contents)
+//*s = *line;
+//	printf("TEST:: %s ", s);
+//	printf("TEST:: %s ", line);
+//	c = split(line, ':', &arr);
+//	printf("found %d tokens.\n", c);
+//	for (i = 0; i < c; i++) {
+//		printf("string #%d: %s\n", i, arr[i]);
+//	}
 	fclose(fp[0]);
 	if (line) {
 		free(line);
