@@ -86,6 +86,11 @@ int main(int argc, char **argv) {
 		}
 
 
+		c =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
+
+
+
+
 		future.tm_sec = 34;
 		future.tm_min = 3;
 		future.tm_hour = 13;

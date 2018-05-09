@@ -30,7 +30,7 @@ void test_funcion(void);
 
 void input_line_parcer(char* in_line, MarketData *output);
 
-
+int utc_to_unix_time_converter_line_parcer(char* utc_in_time);
 
 
 
