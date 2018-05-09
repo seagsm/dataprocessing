@@ -86,7 +86,6 @@ int main(int argc, char **argv) {
 		}
 
 
-
 		future.tm_sec = 34;
 		future.tm_min = 3;
 		future.tm_hour = 13;
@@ -111,20 +110,8 @@ int main(int argc, char **argv) {
 
 		}
 
-
-
-
-
-
-
-
-
 		counter++;
 	}
-
-
-
-
 
 //	read = getline(&line, &len, fp[0]);
 //	printf("Retrieved line of length %zu :\n", read);
