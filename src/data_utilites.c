@@ -88,10 +88,15 @@ int make_full_parth(char str[], char* chr_file_name)
 	{
 		if(str[count] == '\n')
 		{
-			str[count] = '/';
+			str[count] = '\0';
+			break;
 		}
 		count++;
 	}
+
+	str[count] = '/';
+	count++;
+	str[count] = '\0';
 
 	p = chr_file_name;
 	while (*p != '\0') {
@@ -105,7 +110,30 @@ int make_full_parth(char str[], char* chr_file_name)
 }
 
 
+int get_pwd_path(char path[], int int_size_of_buffer)
+{
+	FILE *fp;
 
+	/* Open the command for reading. */
+	fp = popen("/bin/pwd", "r");
+	if (fp == NULL)
+	{
+	    printf("Failed to run command\n" );
+	    exit(1);
+	}
+
+	/* Read the output a line at a time - output it. */
+	//while (fgets(path, sizeof(path)-1, fp) != NULL)
+	while (fgets(path, int_size_of_buffer-1, fp) != NULL)
+	{
+		//printf("%s", path);
+	}
+
+	/* close */
+	pclose(fp);
+
+	return(0);
+}
 
 
 

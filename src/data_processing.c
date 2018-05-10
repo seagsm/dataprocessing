@@ -36,42 +36,17 @@ int main(int argc, char **argv) {
 	unsigned int counter = 0;
 
 	int i;
-	char *s = "Hello, this is a test module for the string splitting.";
 	int c = 0;
 	char **arr = NULL;
 
-	const char *filename = "/home/vadym/Projects/dataprocessing/Debug/BTC_BTS.txt";
 	MarketData data_out;
-
-    struct tm future;       /* as in future date */
-    time_t t;
-
 	char path[1035];
 
 
-    {
-    	  FILE *fp;
-
-    	  /* Open the command for reading. */
-    	  fp = popen("/bin/pwd", "r");
-    	  if (fp == NULL) {
-    	    printf("Failed to run command\n" );
-    	    exit(1);
-    	  }
-
-    	  /* Read the output a line at a time - output it. */
-    	  while (fgets(path, sizeof(path)-1, fp) != NULL) {
-    	    printf("%s", path);
-    	  }
-
-    	  /* close */
-    	  pclose(fp);
-
-    }
+    get_pwd_path(path,sizeof(path));
 
     // make_full_parth(path, "BTC_BTS.txt");
     make_full_parth(path, argv[1]);
-
     printf("%s \n", path);
 
 
@@ -106,14 +81,6 @@ int main(int argc, char **argv) {
 	fclose(fp[0]);
 	if (line) {
 		free(line);
-	}
-
-	c = split(argv[1], '.', &arr);
-
-	printf("found %d tokens.\n", c);
-
-	for (i = 0; i < c; i++) {
-		printf("string #%d: %s\n", i, arr[i]);
 	}
 
 	exit(EXIT_SUCCESS);
