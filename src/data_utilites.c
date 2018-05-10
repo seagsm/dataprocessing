@@ -24,6 +24,7 @@ int split(char *str, char c, char ***arr) {
 	int i = 0;
 	char *p;
 	char *t;
+	size_t u_size = 0;
 
 	p = str;
 	while (*p != '\0') {
@@ -32,7 +33,13 @@ int split(char *str, char c, char ***arr) {
 		p++;
 	}
 
-	*arr = (char**) malloc(sizeof(char*) * count);
+
+	//*arr = (char**) malloc(sizeof(char*) * count);
+
+	u_size = sizeof(char*) * count;
+	*arr = (char**) malloc(u_size);
+
+
 	if (*arr == NULL)
 		exit(1);
 
@@ -70,3 +77,38 @@ int split(char *str, char c, char ***arr) {
 
 	return count;
 }
+
+
+int make_full_parth(char str[], char* chr_file_name)
+{
+	int count = 0;
+	char *p;
+
+	while (str[count] != '\0')
+	{
+		if(str[count] == '\n')
+		{
+			str[count] = '/';
+		}
+		count++;
+	}
+
+	p = chr_file_name;
+	while (*p != '\0') {
+		str[count] = *p;
+		p++;
+		count++;
+	}
+	str[count] = '\0';
+
+	return (1);
+}
+
+
+
+
+
+
+
+
+

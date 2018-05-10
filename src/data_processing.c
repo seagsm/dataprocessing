@@ -46,8 +46,33 @@ int main(int argc, char **argv) {
     struct tm future;       /* as in future date */
     time_t t;
 
+	char path[1035];
 
-	test_funcion();
+
+    {
+    	  FILE *fp;
+
+    	  /* Open the command for reading. */
+    	  fp = popen("/bin/pwd", "r");
+    	  if (fp == NULL) {
+    	    printf("Failed to run command\n" );
+    	    exit(1);
+    	  }
+
+    	  /* Read the output a line at a time - output it. */
+    	  while (fgets(path, sizeof(path)-1, fp) != NULL) {
+    	    printf("%s", path);
+    	  }
+
+    	  /* close */
+    	  pclose(fp);
+
+    }
+
+    // make_full_parth(path, "BTC_BTS.txt");
+    make_full_parth(path, argv[1]);
+
+    printf("%s \n", path);
 
 
 	// Print input args:
@@ -56,11 +81,11 @@ int main(int argc, char **argv) {
 	}
 
 
-	// BTC_BTS.txt
 	// fp[0] = fopen(argv[1], "r");
-	// fp[0] = fopen("BTC_BTS.txt", "r");
 
-	fp[0] = fopen(filename, "r");
+	fp[0] = fopen(path, "r");
+
+	//fp[0] = fopen(filename, "r");
 
 
 
@@ -71,75 +96,13 @@ int main(int argc, char **argv) {
 
 	while ((read = getline(&line, &len, fp[0])) != -1)
 	{
-//	    printf("Retrieved line of length %zu :\n", read);
-//	    printf("%d  %s \n",counter, line);
-
 		input_line_parcer(line, &data_out);
-		printf("\n Exit line: %s \n", data_out.time_stamp);
-
-		c = split(data_out.time_stamp, ' ', &arr);
-
-		printf("found %d tokens.\n", c);
-
-		for (i = 0; i < c; i++) {
-			printf("string #%d: %s\n", i, arr[i]);
-		}
-
-
+		printf("Exit line: %s \n", data_out.time_stamp);
 		c =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
-
-
-
-
-		future.tm_sec = 34;
-		future.tm_min = 3;
-		future.tm_hour = 13;
-		future.tm_mday = 9;     /* 1st */
-		future.tm_mon = 5;      /* July */
-		future.tm_year = 2018 - 1900; /* 2038 in years since 1900 */
-		future.tm_isdst = 0;          /* Daylight Saving not in affect (UTC) */
-		#ifdef _BSD_SOURCE
-		        future.tm_zone = "UTC";
-		#endif
-
-		t = mktime( &future );
-		if ( -1 == t )
-		{
-		                printf("Error converting 1 July 2038 to time_t time since Epoch\n");
-		                return EXIT_FAILURE;
-		}
-		else
-		{
-			printf("unix time is %d \n", t);
-
-
-		}
-
+		printf("Unix time is %d \n", c);
 		counter++;
 	}
 
-//	read = getline(&line, &len, fp[0]);
-//	printf("Retrieved line of length %zu :\n", read);
-//	printf("%d  %s", counter, line);
-//Line processing:
-//	{
-//		for(int i = 0; i < len; i++ )
-//		{
-//			input_line[i] = line[i];
-//
-//		}
-//		printf("%d  %s", len, input_line);
-//	}
-
-//strlen(contents)
-//*s = *line;
-//	printf("TEST:: %s ", s);
-//	printf("TEST:: %s ", line);
-//	c = split(line, ':', &arr);
-//	printf("found %d tokens.\n", c);
-//	for (i = 0; i < c; i++) {
-//		printf("string #%d: %s\n", i, arr[i]);
-//	}
 	fclose(fp[0]);
 	if (line) {
 		free(line);

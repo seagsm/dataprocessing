@@ -32,16 +32,6 @@ char *buy 	= "buy";
 
 char tmp[1000];
 
-void test_funcion(void)
-{
-	MarketData data_out;
-
-
-	input_line_parcer(in_line, &data_out);
-
-}
-
-
 void input_line_parcer(char* in_line, MarketData *output)
 {
 	char *current_line;
@@ -86,10 +76,6 @@ void input_line_parcer(char* in_line, MarketData *output)
 	current_line[18] = '\0';
 	output->last = atof(&current_line[8]);
 
-
-
-	//printf("\n Exit line: %s \n", output->time_stamp);
-
 }
 
 
@@ -106,31 +92,16 @@ int utc_to_unix_time_converter_line_parcer(char* utc_in_time)
 	char **arr_time = NULL;
 
 	c = split(utc_in_time, ' ', &arr_date);
-	for (i = 0; i < c; i++) {
-		printf("string #%d: %s\n", i, arr_date[i]);
-	}
-
-
 	c = split(arr_date[0], '-', &arr_days);
-	for (i = 0; i < c; i++) {
-		printf("string #%d: %s\n", i, arr_date[i]);
-	}
-
-
 	c = split(arr_date[1], ':', &arr_time);
-	for (i = 0; i < c; i++) {
-		printf("string #%d: %s\n", i, arr_date[i]);
-	}
 
-
-
-	future.tm_sec = 34;
-	future.tm_min = 3;
-	future.tm_hour = 13;
-	future.tm_mday = 9;     /* 1st */
-	future.tm_mon = 5;      /* July */
-	future.tm_year = 2018 - 1900; /* 2038 in years since 1900 */
-	future.tm_isdst = 0;          /* Daylight Saving not in affect (UTC) */
+	future.tm_sec   = 	atoi(arr_time[2]);
+	future.tm_min   = 	atoi(arr_time[1]);
+	future.tm_hour  = 	atoi(arr_time[0]);
+	future.tm_mday  = 	atoi(arr_days[2]);
+	future.tm_mon   = 	atoi(arr_days[1]) - 1; 		/* Month, 0 - Jan   */
+	future.tm_year  = 	atoi(arr_days[0]) - 1900; 	/* years since 1900 */
+	future.tm_isdst = 0;          					/* Daylight Saving not in affect (UTC) */
 	#ifdef _BSD_SOURCE
 	        future.tm_zone = "UTC";
 	#endif
@@ -138,20 +109,10 @@ int utc_to_unix_time_converter_line_parcer(char* utc_in_time)
 	t = mktime( &future );
 	if ( -1 == t )
 	{
-	                printf("Error converting 1 July 2038 to time_t time since Epoch\n");
-	                return EXIT_FAILURE;
+	                printf("Error converting UTC time to time_t time since Epoch\n");
+	                //return EXIT_FAILURE;
 	}
-	else
-	{
-		printf("unix time is %d \n", t);
-
-
-	}
-
-
-
-
-	return(10);
+	return(t);
 }
 
 
