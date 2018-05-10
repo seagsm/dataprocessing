@@ -106,6 +106,16 @@ int utc_to_unix_time_converter_line_parcer(char* utc_in_time)
 	        future.tm_zone = "UTC";
 	#endif
 
+    free(arr_time[2]);
+	free(arr_time[1]);
+	free(arr_time[0]);
+	free(arr_days[2]);
+	free(arr_days[1]);
+	free(arr_days[0]);
+
+
+
+
 	t = mktime( &future );
 	if ( -1 == t )
 	{

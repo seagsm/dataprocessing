@@ -23,14 +23,16 @@
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE_TO_OPEN_FILE -1
 
-FILE *fp[50];
+#define MAX_AMOUNT_OF_FILES 50
 
-char input_line[1000];
+FILE *fp[MAX_AMOUNT_OF_FILES];
+FILE *foutput;
+
 
 
 
 int main(int argc, char **argv) {
-	char * line = NULL;
+	char * line[MAX_AMOUNT_OF_FILES] = {NULL};
 	size_t len = 0;
 	size_t read;
 	unsigned int counter = 0;
@@ -42,46 +44,71 @@ int main(int argc, char **argv) {
 	MarketData data_out;
 	char path[1035];
 
-
-    get_pwd_path(path,sizeof(path));
-
-    // make_full_parth(path, "BTC_BTS.txt");
-    make_full_parth(path, argv[1]);
-    printf("%s \n", path);
+	if( argc > MAX_AMOUNT_OF_FILES)
+	{
+		printf("argc = %d > MAX_AMOUNT_OF_FILE = %d \n", argc, MAX_AMOUNT_OF_FILES);
+		exit(1);
+	}
 
 
 	// Print input args:
-	for (int i = 0; i < argc; ++i) {
+	for (i = 0; i < argc; ++i) {
 		printf("argv[%d]: %s\n", i, argv[i]);
 	}
 
 
-	// fp[0] = fopen(argv[1], "r");
-
-	fp[0] = fopen(path, "r");
-
-	//fp[0] = fopen(filename, "r");
+	foutput  = fopen("output.txt", "w");
 
 
+
+	c = 0;
+	while(c < (argc - 1))
+	{
+
+		get_pwd_path(path,sizeof(path));
+		make_full_parth(path, argv[c+1]);
+		printf("%s \n", path);
+		fp[c] = fopen(path, "r");
+		c++;
+	}
 
 	if (fp[0] == NULL) {
 		printf("Error open file.\n");
 		exit(EXIT_FAILURE_TO_OPEN_FILE);
 	}
 
-	while ((read = getline(&line, &len, fp[0])) != -1)
+	// Print input args:
+	for (i = 0; i < (argc - 1); ++i)
 	{
-		input_line_parcer(line, &data_out);
-		printf("Exit line: %s \n", data_out.time_stamp);
-		c =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
-		printf("Unix time is %d \n", c);
-		counter++;
+		while ((read = getline(&line[i], &len, fp[i])) != -1)
+		{
+			input_line_parcer(line[i], &data_out);
+			printf("Exit line: %s \n", data_out.time_stamp);
+			c =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
+			printf("Unix time is %d , num: %d \n", c, counter);
+			counter++;
+			if(counter == 4613359)
+			{
+				printf("Unix time is %d , num: %d \n", c, counter);
+			}
+
+			fprintf (foutput,"%s",line[i]);
+		}
 	}
 
-	fclose(fp[0]);
-	if (line) {
-		free(line);
+
+
+
+
+
+
+	c = 0;
+	while(c < (argc - 1))
+	{
+		fclose(fp[c]);
+		c++;
 	}
+	fclose(foutput);
 
 	exit(EXIT_SUCCESS);
 
