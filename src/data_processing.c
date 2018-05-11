@@ -33,6 +33,12 @@ FILE *foutput;
 
 int main(int argc, char **argv) {
 	char * line[MAX_AMOUNT_OF_FILES] = {NULL};
+	int int_unix_time[MAX_AMOUNT_OF_FILES];
+	size_t st_read[MAX_AMOUNT_OF_FILES];
+
+	int int_index_of_minimal_value = 0;
+	int int_minimal_value = 0;
+
 	size_t len = 0;
 	size_t read;
 	unsigned int counter = 0;
@@ -77,24 +83,80 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE_TO_OPEN_FILE);
 	}
 
-	// Print input args:
+	// First read lines from all opened input files:
 	for (i = 0; i < (argc - 1); ++i)
 	{
-		while ((read = getline(&line[i], &len, fp[i])) != -1)
-		{
-			input_line_parcer(line[i], &data_out);
-			printf("Exit line: %s \n", data_out.time_stamp);
-			c =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
-			printf("Unix time is %d , num: %d \n", c, counter);
-			counter++;
-			if(counter == 4613359)
-			{
-				printf("Unix time is %d , num: %d \n", c, counter);
-			}
-
-			fprintf (foutput,"%s",line[i]);
-		}
+		// read lines:
+		st_read[i] = getline(&line[i], &len, fp[i]);
+		// extract time stamp:
+		input_line_parcer(line[i], &data_out);
+		// convert in to unix time:
+		int_unix_time[i] =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
 	}
+
+	int_index_of_minimal_value = 0;
+	int_minimal_value = int_unix_time[int_index_of_minimal_value];
+
+	while(1)
+	{
+		for (i = 1; i < (argc - 1); ++i)
+		{
+			if((int_minimal_value > int_unix_time[i]) && (int_unix_time[i] != -1) )
+			{
+				int_index_of_minimal_value = i;
+				int_minimal_value = int_unix_time[i];
+			}
+			if(int_minimal_value == -1)
+			{
+				int_index_of_minimal_value = i;
+				int_minimal_value = int_unix_time[i];
+			}
+		}
+
+		if(int_minimal_value == -1)
+		{
+			break;
+		}
+
+
+		fprintf (foutput,"%s",line[int_index_of_minimal_value]);
+		printf("Unix time is %d , num: %d \n", int_unix_time[int_index_of_minimal_value], counter);
+		counter++;
+
+
+		/** Read new line: */
+		st_read[int_index_of_minimal_value] = getline(&line[int_index_of_minimal_value], &len, fp[int_index_of_minimal_value]);
+		if(st_read[int_index_of_minimal_value] != -1)
+		{
+			input_line_parcer(line[int_index_of_minimal_value], &data_out);
+			int_unix_time[int_index_of_minimal_value] =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
+		}
+		else
+		{
+			int_unix_time[int_index_of_minimal_value] = -1;
+		}
+		int_index_of_minimal_value = 0;
+		int_minimal_value = int_unix_time[int_index_of_minimal_value];
+	}
+
+//	for (i = 0; i < (argc - 1); ++i)
+//	{
+//		while ((read = getline(&line[i], &len, fp[i])) != -1)
+//		{
+//			input_line_parcer(line[i], &data_out);
+//			printf("Exit line: %s \n", data_out.time_stamp);
+//			c =  utc_to_unix_time_converter_line_parcer(data_out.time_stamp);
+//			printf("Unix time is %d , num: %d \n", c, counter);
+//			counter++;
+//			if(counter == 4613359)
+//			{
+//				printf("Unix time is %d , num: %d \n", c, counter);
+//			}
+//
+//			fprintf (foutput,"%s",line[i]);
+//		}
+//	}
+
 
 
 
