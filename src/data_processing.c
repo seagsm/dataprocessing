@@ -120,7 +120,11 @@ int main(int argc, char **argv) {
 
 
 		fprintf (foutput,"%s",line[int_index_of_minimal_value]);
-		printf("Unix time is %d , num: %d \n", int_unix_time[int_index_of_minimal_value], counter);
+		if(counter % 100000 == 0)
+		{
+			input_line_parcer(line[int_index_of_minimal_value], &data_out);
+			printf("UTC time is %s , num: %d \n", data_out.time_stamp, counter);
+		}
 		counter++;
 
 
