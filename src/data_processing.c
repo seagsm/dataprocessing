@@ -1,11 +1,12 @@
 
-#include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
 
 #include "data_utilites.h"
 #include "data_line_parcer.h"
 #include <time.h>
+#include <stdio.h>
 
 #define _GNU_SOURCE
 
@@ -33,8 +34,10 @@ FILE *foutput;
 
 int main(int argc, char **argv) {
 	char * line[MAX_AMOUNT_OF_FILES] = {NULL};
+	char pair_name[MAX_AMOUNT_OF_FILES][100] = {NULL,NULL};
 	int int_unix_time[MAX_AMOUNT_OF_FILES];
 	size_t st_read[MAX_AMOUNT_OF_FILES];
+	char * output_line;
 
 	int int_index_of_minimal_value = 0;
 	int int_minimal_value = 0;
@@ -50,6 +53,8 @@ int main(int argc, char **argv) {
 	MarketData data_out;
 	char path[1035];
 
+	char **currency_name = NULL;
+
 	if( argc > MAX_AMOUNT_OF_FILES)
 	{
 		printf("argc = %d > MAX_AMOUNT_OF_FILE = %d \n", argc, MAX_AMOUNT_OF_FILES);
@@ -58,10 +63,14 @@ int main(int argc, char **argv) {
 
 
 	// Print input args:
-	for (i = 0; i < argc; ++i) {
+	printf("argv[%d]: %s\n", 0, argv[0]);
+	// Here we add name of pairs to char array:
+	for (i = 1; i < argc; ++i)
+	{
 		printf("argv[%d]: %s\n", i, argv[i]);
+		c = split(argv[i], '.', &currency_name);
+		sprintf(&pair_name[i-1],"%s",currency_name[0]);
 	}
-
 
 	foutput  = fopen("output.txt", "w");
 
@@ -119,7 +128,21 @@ int main(int argc, char **argv) {
 		}
 
 
-		fprintf (foutput,"%s",line[int_index_of_minimal_value]);
+		//---Build output string----------------------------------------
+		// Remove last ']'
+		output_line = strtok(line[int_index_of_minimal_value], "]");
+
+		           // [{'trad................... 'globalTradeID': 314178404, 'type': 'sell'}]
+         //{'BTC_STR': {'date': '2018-05-13 09:14:13', 'last': '0.00004204', 'type': 'sell'}}
+         // line[int_index_of_minimal_value] + 1  -> + 1 is for remove first '['
+
+		fprintf (foutput,"{'%s': %s}\n",pair_name[int_index_of_minimal_value], line[int_index_of_minimal_value] + 1);
+
+
+
+		//currency_name[0] is currency name.
+		//--------------------------------------------------------------
+		//fprintf (foutput,"%s",line[int_index_of_minimal_value]);
 		if(counter % 100000 == 0)
 		{
 			input_line_parcer(line[int_index_of_minimal_value], &data_out);
